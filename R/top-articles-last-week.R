@@ -3,50 +3,22 @@
 library(pageviews)
 library(tidyverse)
 library(lubridate)
-library(scales)
-library(tsibble)
 library(rvest)
-library(httr)
 library(ggtext)
-library(magick)
 
+source("R/funcs.R")
 
 # setting params
 
 options(lubridate.week.start = 1)
 date_from <- floor_date(today() - 7, unit = "week")
 date_to <- date_from + 6
-wiki_project <- "cs.wikipedia"
+lang <- "cs"
 
-# top articles by day
+# top articles summary
 
-top_articles_by_day <- seq(date_from, date_to, by = "day") |>
-  map_dfr(~ top_articles(project = wiki_project, start = .x)) |>
-  filter(
-    article != "Hlavní_strana",
-    !str_starts(article, fixed("Speciální:"))
-  )
-
-# top articles total
-
-top_articles <- top_articles_by_day |>
-  group_by(article) |>
-  summarise(views = sum(views)) |>
-  slice_max(order_by = views, n = 20) |>
-  mutate(
-    article = map_chr(
-      article,
-      \(x) {
-        read_html(paste0("https://cs.wikipedia.org/wiki/", x)) |>
-          html_element("h1") |>
-          html_text()
-      }
-    )
-  ) |>
-  group_by(article) |>
-  summarise(views = sum(views)) |>
-  slice_max(order_by = views, n = 10) |>
-  arrange(desc(views))
+top_articles <- top_articles_by_day(date_from, date_to, lang) |>
+  summarise_top_articles(10)
 
 # fetch top article info
 
@@ -66,11 +38,6 @@ if (nchar(page_description) < 30) {
     html_element("p:nth-of-type(2)") |>
     html_text()
 }
-# page_image_url <- page_content |>
-#   html_element("meta[property='og:image']") |>
-#   html_attr("content")
-# img <- image_read(page_image_url)
-
 
 # plot top articles
 
