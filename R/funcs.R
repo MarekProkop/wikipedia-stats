@@ -41,3 +41,14 @@ summarise_top_articles <- function(articles, n) {
     slice_max(order_by = views, n = n) |>
     arrange(desc(views))
 }
+
+total_pageviews <- function(date_from, date_to, lang) {
+  project_pageviews(
+    project = "cs.wikipedia",
+    start = pageview_timestamps(date_from, first = TRUE),
+    end = pageview_timestamps(date_to, first = FALSE)
+  ) |>
+    summarise(views = sum(views)) |>
+    pull(views)
+
+}

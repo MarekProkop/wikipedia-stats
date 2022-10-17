@@ -38,6 +38,15 @@ if (nchar(page_description) < 30) {
     html_element("p:nth-of-type(2)") |>
     html_text()
 }
+page_description <- page_description |>
+  str_replace_all("\\[[0-9]+\\]", "") |>
+  str_trunc(500, "right")
+
+# get summary
+
+top10_pv <- sum(top_articles$views)
+total_pv <- total_pageviews(date_from, date_to, "cs")
+summary_line <- str_glue("Česká Wikipedie měla v týdnu od {format(date_from, '%x')} celkem {format(total_pv, big.mark = ' ')} zhlédnutí. 10 nejčtenějších stránek tedy představuje jen {format(round(top10_pv / total_pv * 100, digits = 2), decimal.mark = ',')} %.")
 
 # plot top articles
 
@@ -55,7 +64,8 @@ p <- top_articles |>
       "**", page_h1, "**\n\n", page_description
     )),
     vjust = 0, hjust = 1,
-    width = unit(13, "lines"), stat = "unique"
+    width = unit(18, "lines"), stat = "unique",
+    alpha = 0.7
   ) +
   theme_minimal() +
   theme(
@@ -66,7 +76,8 @@ p <- top_articles |>
   ) +
   labs(
     title = paste("Nejčtenější články české Wikipedie v týdnu od", format(date_from, "%x")),
-    x = NULL, y = NULL
+    x = NULL, y = NULL,
+    caption = summary_line
   )
 
 print(p)
