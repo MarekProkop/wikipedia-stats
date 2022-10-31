@@ -32,7 +32,9 @@ page_h1 <- page_content |>
   html_text()
 page_description <- page_content |>
   html_element("p") |>
-  html_text()
+  html_text() |>
+  str_remove_all("\\([^)]+\\)|\\[[^]]+\\]") |>
+  str_squish()
 if (nchar(page_description) < 30) {
   page_description <- page_content |>
     html_element("p:nth-of-type(2)") |>
