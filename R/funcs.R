@@ -39,7 +39,7 @@ summarise_top_articles <- function(articles, n) {
     group_by(article) |>
     summarise(views = sum(views)) |>
     slice_max(order_by = views, n = n) |>
-    arrange(desc(views))
+    mutate(article = fct_reorder(article, views))
 }
 
 total_pageviews <- function(date_from, date_to, lang) {
@@ -51,4 +51,11 @@ total_pageviews <- function(date_from, date_to, lang) {
     summarise(views = sum(views)) |>
     pull(views)
 
+}
+
+format_date <- function(x) {
+  x |>
+    format("%x") |>
+    str_remove_all("\\b0") |>
+    str_replace_all("\\.", ". ")
 }

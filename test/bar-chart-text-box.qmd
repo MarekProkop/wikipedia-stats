@@ -1,0 +1,53 @@
+---
+title: "Bar chart with a text box"
+format: html
+---
+
+```{r}
+library(tidyverse)
+library(ggtext)
+```
+
+Chci vykreslit horizontální sloupkový graf s textovým boxem vpravo dole. Textový box by měl mít co největší plochu a zároveň se nepřekrývat se sloupky grafu.
+
+Příklad grafu
+
+```{r}
+data <- tibble(
+  item = letters[1:10],
+  value = c(100, 80, 50, 40, 35, 30, 20, 18, 15, 10)
+)
+
+base_chart <- data |> 
+  mutate(item = fct_reorder(item, value)) |> 
+  ggplot(aes(x = item, y = value)) +
+  geom_col() +
+  coord_flip()
+
+base_chart
+```
+
+Příklad ploch
+
+```{r}
+base_chart +
+  geom_rect(
+    aes(xmin = "d", ymin = 45, xmax = "j", ymax = 100), 
+    color = "black", fill = "grey", alpha = 0.1
+  ) +
+  geom_rect(
+    aes(xmin = "e", ymin = 40, xmax = "j", ymax = 100), 
+    color = "black", fill = "grey", alpha = 0.1
+  )
+```
+
+Výpočet největší plochy
+
+```{r}
+data |> 
+  mutate(
+    height = rank(desc(item)),
+    width = max(value) - value,
+    area = height * width
+  )
+```
