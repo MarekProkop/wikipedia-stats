@@ -48,7 +48,7 @@ page_description <- page_description |>
 
 top10_pv <- sum(top_articles$views)
 total_pv <- total_pageviews(date_from, date_to, "cs")
-summary_line <- str_glue("Česká Wikipedie měla v týdnu od {format_date(date_from)} celkem {format(total_pv, big.mark = ' ')} zhlédnutí. 10 nejčtenějších stránek tedy představuje jen {format(round(top10_pv / total_pv * 100, digits = 2), decimal.mark = ',')} %.")
+summary_line <- str_glue("Česká Wikipedie měla v týdnu od {format_date(date_from)} celkem {format(total_pv, big.mark = ' ')} zhlédnutí. 10 nejčtenějších stránek tedy představuje {format(round(top10_pv / total_pv * 100, digits = 2), decimal.mark = ',')} %.")
 
 # plot top articles
 
@@ -60,7 +60,7 @@ p <- top_articles |>
     aes(x = 0, y = article, label = str_replace_all(article, fixed("_"), " ")),
     hjust = 0, position = position_nudge(y = 0.44), size = 3.6, color = "gray20"
   ) +
-  scale_x_continuous(expand = c(0, 0)) +
+  scale_x_continuous(expand = c(0, 0), labels = scales::label_number(scale = 0.001, suffix = "K")) +
   theme_minimal() +
   theme(
     axis.text.y = element_blank(),
