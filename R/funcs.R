@@ -4,7 +4,8 @@ top_articles_by_day <- function(date_from, date_to, lang) {
     map_dfr(~ top_articles(project = wiki_project, start = .x)) |>
     filter(
       article != "Hlavní_strana",
-      !str_starts(article, fixed("Speciální:"))
+      !str_starts(article, fixed("Speciální:")),
+      !str_starts(article, fixed("Wikipedie:"))
     ) |>
     as_tibble()
 }

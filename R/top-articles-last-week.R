@@ -31,7 +31,7 @@ page_h1 <- page_content |>
   html_element("h1") |>
   html_text()
 page_description <- page_content |>
-  html_element("p") |>
+  html_element("#mw-content-text > div.mw-parser-output > p") |>
   html_text() |>
   str_remove_all("\\([^)]+\\)|\\[[^]]+\\]") |>
   str_squish()
@@ -48,7 +48,16 @@ page_description <- page_description |>
 
 top10_pv <- sum(top_articles$views)
 total_pv <- total_pageviews(date_from, date_to, "cs")
-summary_line <- str_glue("Česká Wikipedie měla v týdnu od {format_date(date_from)} celkem {format(total_pv, big.mark = ' ')} zhlédnutí. 10 nejčtenějších stránek tedy představuje {format(round(top10_pv / total_pv * 100, digits = 2), decimal.mark = ',')} %.")
+summary_line <- str_glue(
+  "Česká Wikipedie měla v týdnu od {format_date(date_from)} ",
+  "celkem {format(total_pv, big.mark = ' ')} zhlédnutí. ",
+  "10 nejčtenějších stránek tedy představuje ",
+  "{percents} %.",
+  percents = format(
+    round(top10_pv / total_pv * 100, digits = 2),
+    decimal.mark = ","
+  )
+)
 
 # plot top articles
 
@@ -58,9 +67,11 @@ p <- top_articles |>
   geom_col(fill = hsv(0.3, 0.6, 0.4), alpha = 0.8, width = 0.27) +
   geom_text(
     aes(x = 0, y = article, label = str_replace_all(article, fixed("_"), " ")),
-    hjust = 0, position = position_nudge(y = 0.44), size = 3.6, color = "gray20"
+    hjust = 0, position = position_nudge(y = 0.44), size = 6, color = "gray20"
   ) +
-  scale_x_continuous(expand = c(0, 0), labels = scales::label_number(scale = 0.001, suffix = "K")) +
+  scale_x_continuous(
+    expand = c(0, 0), labels = scales::label_number(scale = 0.001, suffix = "K")
+  ) +
   theme_minimal() +
   theme(
     axis.text.y = element_blank(),
@@ -69,7 +80,9 @@ p <- top_articles |>
     aspect.ratio = 9 / 16
   ) +
   labs(
-    title = paste("Nejčtenější články české Wikipedie v týdnu od", format_date(date_from)),
+    title = paste(
+      "Nejčtenější články české Wikipedie v týdnu od", format_date(date_from)
+    ),
     x = NULL, y = NULL,
     caption = summary_line
   )
@@ -94,7 +107,19 @@ p <- p +
     )),
     vjust = 0, hjust = 1,
     width = unit(box_width, "npc"), stat = "unique",
-    alpha = 0.7
+    alpha = 0.7,
+    size = 6, color = "black"
   )
 
-print(p)
+p <- p +
+  theme(
+    plot.title = element_text(size = 22, face = "bold", color = "gray20"),
+    plot.caption = element_text(size = 14),
+    axis.text = element_text(size = 14, color = "gray20")
+  )
+
+ggsave(
+  "top-articles-last-week.png", p,
+  width = 1200, height = 675, units = "px", dpi = "screen",
+  bg = "white"
+)
