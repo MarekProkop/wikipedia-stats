@@ -67,17 +67,10 @@ p <- top_articles |>
   geom_col(fill = hsv(0.3, 0.6, 0.4), alpha = 0.8, width = 0.27) +
   geom_text(
     aes(x = 0, y = article, label = str_replace_all(article, fixed("_"), " ")),
-    hjust = 0, position = position_nudge(y = 0.44), size = 6, color = "gray20"
+    hjust = 0, position = position_nudge(y = 0.44), size = 7, color = "gray20"
   ) +
   scale_x_continuous(
     expand = c(0, 0), labels = scales::label_number(scale = 0.001, suffix = "K")
-  ) +
-  theme_minimal() +
-  theme(
-    axis.text.y = element_blank(),
-    panel.grid.major.y = element_blank(),
-    plot.title = element_text(margin = margin(0, 0, 15, 0)),
-    aspect.ratio = 9 / 16
   ) +
   labs(
     title = paste(
@@ -85,6 +78,13 @@ p <- top_articles |>
     ),
     x = NULL, y = NULL,
     caption = summary_line
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_blank(),
+    panel.grid.major.y = element_blank(),
+    plot.title = element_text(margin = margin(0, 0, 15, 0), size = 40),
+    aspect.ratio = 9 / 16
   )
 
 # plot text box
