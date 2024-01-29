@@ -76,11 +76,13 @@ p <- top_articles |>
     title = paste(
       "Nejčtenější články české Wikipedie v týdnu od", format_date(date_from)
     ),
-    x = NULL, y = NULL,
+    x = "počet zhlédnutí",
+    y = NULL,
     caption = summary_line
   ) +
   theme_minimal() +
   theme(
+    axis.title.x = element_text(hjust = 0, size = 16),
     axis.text.y = element_blank(),
     panel.grid.major.y = element_blank(),
     plot.title = element_text(margin = margin(0, 0, 15, 0), size = 40),
@@ -98,7 +100,6 @@ box_width <- 0.98 - top_articles |>
   ) |>
   slice_max(area) |>
   pull(prop)
-
 
 p <- p +
   geom_textbox(
