@@ -29,30 +29,6 @@ page_summary <- wikkitidy::get_page_summary(
 page_h1 <- page_summary$title
 page_description <- page_summary$extract
 
-# page_url <- paste0(
-#   "https://cs.wikipedia.org/wiki/",
-#   URLencode(str_replace_all(top_articles$article[1], fixed(" "), "_"))
-# )
-# page_content <- read_html(page_url)
-# page_h1 <- page_content |>
-#   html_element("h1") |>
-#   html_text()
-# page_description <- page_content |>
-#   html_element("#mw-content-text > div.mw-parser-output > p") |>
-#   html_text() |>
-#   str_remove_all("\\([^)]+\\)|\\[[^]]+\\]") |>
-#   str_squish()
-# if (nchar(page_description) < 30) {
-#   page_description <- page_content |>
-#     html_element("p:nth-of-type(2)") |>
-#     html_text()
-# }
-# page_description <- page_description |>
-#   str_replace_all("\\[[0-9]+\\]", "") |>
-#   str_trunc(500, "right")
-
-# get summary
-
 top10_pv <- sum(top_articles$views)
 total_pv <- total_pageviews(date_from, date_to, "cs")
 summary_line <- str_glue(
